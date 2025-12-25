@@ -1027,6 +1027,11 @@
     }
 });
 
+            audio.addEventListener('error', function(e) {
+    console.log('Audio error:', audio.error.code, audio.error.message);
+    console.log('Src attempted:', audio.src);
+});
+
 // ========== HELPERS GLOBALES ==========
 function goToDemo() { const demo = document.getElementById('demo'); if (demo) demo.scrollIntoView({ behavior: 'smooth', block: 'start' }); activateSectionAudioImmediately('demo'); }
 function goToSection1() { const s1 = document.getElementById('section-1'); if (s1) s1.scrollIntoView({ behavior: 'smooth', block: 'start' }); activateSectionAudioImmediately('section-1'); }
@@ -4688,5 +4693,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </body>
 
 </html>
+
 
 
