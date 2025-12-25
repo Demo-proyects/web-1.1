@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TU - TIENDA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>tailwind.config={theme:{extend:{colors:{'temu-orange':'#fb7701'},animation:{'shake':'shake 0.4s cubic-bezier(.36,.07,.19,.97) both','flash-red':'flashRed 0.5s ease-in-out','toast-enter':'toastEnter 0.3s cubic-bezier(0.16,1,0.3,1) forwards','toast-exit':'toastExit 0.2s ease-in-out forwards'},keyframes:{shake:{'0%,100%':{transform:'translateX(0)'},'10%,30%,50%,70%,90%':{transform:'translateX(-4px)'},'20%,40%,60%,80%':{transform:'translateX(4px)'}},flashRed:{'0%,100%':{backgroundColor:'transparent'},'50%':{backgroundColor:'rgba(239,68,68,0.1)'}},toastEnter:{'0%':{opacity:'0',transform:'translate(-50%,-40%) scale(0.95)'},'100%':{opacity:'1',transform:'translate(-50%,-50%) scale(1)'}},toastExit:{'0%':{opacity:'1',transform:'translate(-50%,-50%) scale(1)'},'100%':{opacity:'0',transform:'translate(-50%,-40%) scale(0.95)'}}}}}};</script>
+<style>
+.promo-text{background:linear-gradient(to right,#fde047,#facc15,#fde047);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none;}.scrollbar-hide::-webkit-scrollbar{display:none;}
+.no-scrollbar::-webkit-scrollbar{display:none;}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none;}
+.size-btn.selected{border:2px solid black;font-weight:700;background-color:#fff;}
+.color-card.selected{border:2px solid black;}
+.collapsed-warning{border-color:#fca5a5 !important;background-color:#fef2f2;}
+.modal-footer{box-shadow:0 0 10px 10px #fff,0 -1px 1px 0 rgba(0,0,0,0.05) inset;}
+#locationModal.open,#registerModal.open,#cartModal.open,#mapModal.open,#productModalOverlay.open{opacity:1!important;visibility:visible!important;}
+#locationModal.open>div,#registerModal.open>div,#cartModal.open>div,#mapModal.open>div,#productModalOverlay.open>div{transform:scale(1)!important;}
+#megaMenu.mobile-open{transform:translateX(0)!important;}@media (min-width:768px){#megaMenu.desktop-open{opacity:1!important;visibility:visible!important;}}
+
+/* ==================== ESTILOS DE PRODUCTOS ==================== */
+.products-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;padding:1rem 0;}
+@media(min-width:640px){.products-grid{grid-template-columns:repeat(3,1fr);gap:1.5rem;}}
+@media(min-width:1024px){.products-grid{grid-template-columns:repeat(4,1fr);gap:2rem;}}
+
+.product-card{background:#fff;border-radius:0.5rem;overflow:hidden;position:relative;transition:transform 0.2s;display:flex;flex-direction:column;cursor:pointer;border:1px solid #f0f0f0;}
+.product-card:hover{transform:translateY(-3px);}
+.product-image-container{width:100%;aspect-ratio:3/4;background:#f9f9f9;position:relative;overflow:hidden;}
+.product-image{width:100%;height:100%;object-fit:cover;transition:transform 0.3s;}
+.product-card:hover .product-image{transform:scale(1.05);}
+.product-name{padding:0.75rem 1rem 0.25rem;flex-grow:1;font-size:0.875rem;line-height:1.3;}
+.product-price{padding:0 1rem 0.25rem;}
+.product-cart-btn{position:absolute;bottom:12px;right:12px;background:rgba(255,255,255,0.95);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);color:#333;border:none;cursor:pointer;transition:all 0.2s;z-index:10;}
+.product-cart-btn:hover{background:#fb7701;color:#fff;transform:scale(1.1);box-shadow:0 3px 10px rgba(0,0,0,0.2);}
+
+/* Ajustar contenedor principal para mejor uso del espacio */
+.container{max-width:1400px;margin:0 auto;padding:0 2rem;}
+
+/* ==================== ESTILOS SIDEBAR DE FILTROS DESKTOP ==================== */
+@media (min-width: 1024px) {
+  .desktop-filter-sidebar {
+    width: 260px;
+    transition: margin-left 0.3s ease;
+  }
+  .desktop-filter-sidebar.hidden-sidebar {
+    margin-left: -260px;
+  }
+  .products-container-wrapper {
+    transition: margin-left 0.3s ease;
+  }
+  .products-container-wrapper.full-width {
+    margin-left: 0;
+  }
+}
+
+.filter-section {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 0;
+}
+
+.filter-section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 0;
+  user-select: none;
+}
+
+.filter-section-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.filter-section-content.open {
+  max-height: 500px;
+  margin-top: 0.75rem;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #4b5563;
+  transition: color 0.2s;
+}
+
+.filter-option:hover {
+  color: #fb7701;
+}
+
+.filter-option input[type="checkbox"] {
+  margin-right: 0.5rem;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #fb7701;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.filter-chip:hover {
+  border-color: #fb7701;
+  background-color: #fff7ed;
+}
+
+.filter-chip.active {
+  background-color: #fb7701;
+  color: white;
+  border-color: #fb7701;
+}
+.arrow-mobile{top:40%;transform:translateY(-50%);z-index:20;background-color:rgba(0,0,0,0.5);color:#fff;padding:10px;border-radius:9999px;cursor:pointer;opacity:0.9;transition:opacity 0.15s;border:none;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+
+<body class="font-sans bg-[#fafafa] text-[#262626]">
+
+<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-[2000] opacity-0 invisible transition-opacity duration-300 p-4" id="locationModal">
+<div class="bg-white rounded-xl w-full max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300">
+<div class="px-6 py-4 flex justify-between items-center border-b border-gray-200">
+<h3 class="text-lg font-semibold">Nuestra Tienda Principal</h3>
+<button class="p-1 flex items-center justify-center text-gray-500 hover:text-temu-orange transition-colors" onclick="closeModal()"><i data-lucide="x" width="24"></i></button>
+</div>
+<div class="flex flex-col flex-grow overflow-y-auto p-0">
+<img src="images/fondo.jpeg" alt="Ubicación de la tienda" class="w-full h-auto block" onerror="this.src='https://placehold.co/600x300/e5e5e5/666?text=FOTO+DE+LA+TIENDA'">
+<div class="bg-gray-50 p-6 border-t border-gray-200">
+<p class="mb-3 text-sm flex items-start gap-3"><i data-lucide="map-pin" width="18" color="#dc2626" class="flex-shrink-0"></i><span><strong>Dirección:</strong> Av. Principal #123, Sector Central, Ciudad Ejemplo</span></p>
+<p class="mb-3 text-sm flex items-start gap-3"><i data-lucide="phone" width="18" color="#059669" class="flex-shrink-0"></i><span><strong>Teléfono:</strong> +1 (809) 8786-115</span></p>
+<p class="text-sm flex items-start gap-3"><i data-lucide="clock" width="18" color="#f97316" class="flex-shrink-0"></i><span><strong>Horario:</strong> Lunes a Sábado, 9:00 AM - 7:00 PM</span></p>
+</div></div></div></div>
+
+<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-[2000] opacity-0 invisible transition-opacity duration-300 p-4" id="mapModal">
+<div class="bg-white rounded-xl w-full max-w-[800px] max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300">
+<div class="px-6 py-4 flex justify-between items-center border-b border-gray-200">
+<h3 class="text-lg font-semibold">Ubícanos en el Mapa</h3>
+<button class="p-1 flex items-center justify-center text-gray-500 hover:text-temu-orange transition-colors" onclick="closeMapModal()"><i data-lucide="x" width="24"></i></button>
+</div>
+<div class="flex flex-col flex-grow overflow-y-auto p-0">
+<div class="w-full h-[500px] bg-gray-200">
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3784.5761891500666!2d-69.91438928510842!3d18.45738808744588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaf32f2f3f3f3f3%3A0x3f3f3f3f3f3f3f3f!2sSanto%20Domingo!5e0!3m2!1ses!2sdo!4v1625680000000!5m2!1ses!2sdo" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+</div>
+<div class="bg-gray-50 p-6 border-t border-gray-200">
+<p class="mb-3 text-sm flex items-start gap-3"><i data-lucide="map-pin" width="18" color="#dc2626" class="flex-shrink-0"></i><span><strong>Dirección exacta:</strong> Av. Principal #123, Sector Central, Ciudad Ejemplo</span></p>
+<p class="text-sm flex items-start gap-3"><i data-lucide="navigation" width="18" color="#3b82f6" class="flex-shrink-0"></i><span><strong>Coordenadas:</strong> 18.457388, -69.914389</span></p>
+</div></div></div></div>
+
+<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-[3000] opacity-0 invisible transition-opacity duration-300 p-4" id="registerModal">
+<div class="bg-white rounded-xl w-full max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300">
+<div class="px-6 py-6 flex justify-between items-center border-b border-gray-200">
+<h3 class="text-lg font-semibold">Crear una cuenta</h3>
+<button class="p-1 flex items-center justify-center text-gray-500 hover:text-temu-orange transition-colors" onclick="closeRegisterModal()"><i data-lucide="x" width="24"></i></button>
+</div>
+<div class="p-6 flex flex-col flex-grow overflow-y-auto">
+<div class="mb-4"><label for="registerName" class="block mb-2 font-medium text-gray-800">Nombre completo</label><input type="text" id="registerName" placeholder="Ingresa tu nombre" class="w-full px-3 py-3 border border-gray-300 rounded-lg text-base transition-colors focus:border-temu-orange focus:outline-none"></div>
+<div class="mb-4"><label for="registerEmail" class="block mb-2 font-medium text-gray-800">Correo electrónico</label><input type="email" id="registerEmail" placeholder="Ingresa tu correo" class="w-full px-3 py-3 border border-gray-300 rounded-lg text-base transition-colors focus:border-temu-orange focus:outline-none"></div>
+<div class="mb-4"><label for="registerPassword" class="block mb-2 font-medium text-gray-800">Contraseña</label><input type="password" id="registerPassword" placeholder="Crea una contraseña" class="w-full px-3 py-3 border border-gray-300 rounded-lg text-base transition-colors focus:border-temu-orange focus:outline-none"></div>
+<div class="mb-4"><label for="registerConfirmPassword" class="block mb-2 font-medium text-gray-800">Confirmar contraseña</label><input type="password" id="registerConfirmPassword" placeholder="Repite tu contraseña" class="w-full px-3 py-3 border border-gray-300 rounded-lg text-base transition-colors focus:border-temu-orange focus:outline-none"></div>
+<button class="bg-temu-orange text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-colors mt-4 hover:bg-[#c2410c]" onclick="registerUser()">Crear cuenta</button>
+</div></div></div>
+
+<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-[4000] opacity-0 invisible transition-opacity duration-300 p-4" id="cartModal">
+<div class="bg-white rounded-xl w-full max-w-[800px] max-h-[90vh] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300">
+<div class="px-6 py-6 flex justify-between items-center border-b border-gray-200">
+<h3 class="text-lg font-semibold">Tu Carrito de Compras</h3>
+<button class="p-1 flex items-center justify-center text-gray-500 hover:text-temu-orange transition-colors" onclick="closeCartModal()"><i data-lucide="x" width="24"></i></button>
+</div>
+<div class="p-6 flex flex-col flex-grow overflow-y-auto max-h-[60vh]" id="cartModalBody"></div>
+<div class="px-6 py-6 border-t border-gray-200 flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<div class="text-xl font-bold text-temu-orange">Total: DOP$ <span id="cartTotalAmount">0.00</span></div>
+<button class="bg-temu-orange text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-colors hover:bg-[#c2410c]" onclick="checkout()">Finalizar Compra</button>
+</div>
+<div id="cartErrorMessage" class="hidden w-full bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded text-sm">
+<div class="flex items-center"><i data-lucide="alert-triangle" class="w-4 h-4 mr-2 flex-shrink-0"></i><span id="cartErrorText"></span></div>
+</div></div></div></div>
+
+<div id="productModalOverlay" class="fixed inset-0 bg-black/60 z-[9999] hidden items-end sm:items-center justify-center transition-opacity duration-300 opacity-0 backdrop-blur-sm">
+<div id="productModalContent" class="bg-white w-full sm:max-w-4xl sm:rounded-lg rounded-t-2xl overflow-hidden relative shadow-2xl transform translate-y-full sm:translate-y-0 transition-transform duration-300 max-h-[90vh] flex flex-col sm:mx-4">
+<button onclick="closeProductModal()" class="absolute top-3 right-3 z-50 p-2 text-gray-500 hover:text-black bg-white rounded-full bg-opacity-80">
+<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+</button>
+
+<div id="modalBody" class="flex-grow overflow-y-auto p-5 sm:p-8 no-scrollbar">
+<div class="flex flex-col sm:flex-row gap-6 sm:gap-8">
+<div class="w-full sm:w-5/12 flex flex-col">
+<div id="mobileGalleryContainer" class="block sm:hidden relative mb-4">
+<div id="mobileGallery" class="overflow-x-scroll no-scrollbar snap-x flex">
+<div class="flex-shrink-0 w-full snap-start aspect-[3/4] bg-gray-100"><img id="mobileMain1" src="" class="w-full h-full object-cover"></div>
+<div class="flex-shrink-0 w-full snap-start aspect-[3/4] bg-gray-100"><img id="mobileMain2" src="" class="w-full h-full object-cover"></div>
+<div class="flex-shrink-0 w-full snap-start aspect-[3/4] bg-gray-100"><img id="mobileMain3" src="" class="w-full h-full object-cover"></div>
+</div>
+<button onclick="scrollGallery(-1)" class="arrow-mobile absolute left-3"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>
+<button onclick="scrollGallery(1)" class="arrow-mobile absolute right-3"><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></button>
+</div>
+
+<div class="block sm:hidden mb-6">
+<p class="text-sm font-medium mb-1" id="mobileShortDescription"></p>
+<div class="flex items-baseline gap-2 mb-1">
+<span class="text-xl font-bold text-temu-orange" id="mobilePrice"></span>
+<span class="text-pvr-gray text-xs line-through" id="mobileOldPrice"></span>
+</div>
+<div id="mobileBadge" class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded mb-3 border border-yellow-300">
+<svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.817 2.045a1 1 0 00-.363 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.817-2.045a1 1 0 00-1.176 0l-2.817 2.045c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.029 8.72c-.783-.57-.381-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"></path></svg>
+<span id="mobileBadgeText"></span>
+</div>
+<span class="block text-xs text-gray-600">Color: <span id="mobileColorLabel">Oscuro</span></span>
+</div>
+
+<div class="hidden sm:flex flex-col gap-3">
+<div class="w-full aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-100">
+<img id="desktopMainImage" src="" class="w-full h-full object-cover">
+</div>
+<div class="grid grid-cols-4 gap-2">
+<div id="thumb1" onclick="changeDesktopImage(this,'Frente')" class="aspect-square border-2 border-black rounded overflow-hidden cursor-pointer"><img src="" class="w-full h-full object-cover"></div>
+<div id="thumb2" onclick="changeDesktopImage(this,'Espalda')" class="aspect-square border border-transparent hover:border-gray-300 rounded overflow-hidden cursor-pointer"><img src="" class="w-full h-full object-cover"></div>
+<div id="thumb3" onclick="changeDesktopImage(this,'Detalle')" class="aspect-square border border-transparent hover:border-gray-300 rounded overflow-hidden cursor-pointer"><img src="" class="w-full h-full object-cover"></div>
+<div id="thumb4" onclick="changeDesktopImage(this,'Otro')" class="aspect-square border border-transparent hover:border-gray-300 rounded overflow-hidden cursor-pointer"><img src="" class="w-full h-full object-cover"></div>
+</div>
+</div>
+
+</div>
+
+<div class="w-full sm:w-7/12 flex flex-col">
+<div class="hidden sm:block mb-4">
+<h2 id="modalTitle" class="text-gray-900 font-bold text-lg leading-snug mb-2">Titulo del Producto</h2>
+<div class="flex items-center text-sm mb-3">
+<span class="mr-3 text-gray-600" id="salesCount">0 ventas</span>
+<span class="font-medium text-gray-800" id="sellerName">Vendedor</span>
+</div>
+<div id="desktopBadge" class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded mb-3 border border-yellow-300">
+<svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.817 2.045a1 1 0 00-.363 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.817-2.045a1 1 0 00-1.176 0l-2.817 2.045c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.029 8.72c-.783-.57-.381-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z"></path></svg>
+<span id="desktopBadgeText"></span>
+</div>
+<div class="flex items-baseline flex-wrap gap-2 mb-4">
+<span id="modalPrice" class="text-3xl font-bold text-black">DOP$ 0.00</span>
+<span class="text-pvr-gray text-sm line-through" id="oldPrice"></span>
+</div>
+<span class="block text-gray-900 font-bold text-sm">Color: <span id="desktopColorLabel" class="font-normal">Estándar</span></span>
+</div>
+
+<div id="colorSelection" class="mb-6">
+<div id="colorContainer" class="grid grid-cols-4 gap-3"></div>
+</div>
+
+<div id="sizeSection" class="rounded-lg transition-colors duration-300 mb-6">
+<div class="flex justify-between items-center mb-2">
+<span class="text-gray-900 font-bold text-sm">Talla:</span>
+<a href="#" class="flex items-center text-gray-500 text-xs hover:opacity-80 cursor-pointer border border-gray-300 rounded px-2 py-1 bg-gray-50">
+<svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z" /><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a2 2 0 00-2-2H8a2 2 0 00-2 2v4m4 0h.01M6 15h12v-4H6v4z" /></svg>
+<span>Guía de tallas</span>
+</a>
+</div>
+<div id="sizeContainer" class="flex flex-wrap gap-2"></div>
+<div id="stockWarning" class="hidden mt-2 text-xs text-red-600 font-medium flex items-center gap-1">
+<span>La opción que seleccionaste está agotada; ¡busca similares!</span>
+</div>
+</div>
+
+<div id="qtyInputRow" class="flex items-center mb-6">
+<span class="font-bold text-sm text-gray-900 mr-4">Cant.</span>
+<div class="flex items-center border border-gray-300 rounded-md bg-white">
+<button id="qtyMinusBtn" onclick="updateModalQty(-1)" class="text-gray-500 px-3 py-1 hover:bg-gray-100 text-lg disabled:opacity-50" disabled>−</button>
+<input id="currentInputQty" type="text" value="1" readonly class="w-8 text-center font-medium focus:outline-none py-1 text-sm bg-transparent">
+<button id="qtyPlusBtn" onclick="updateModalQty(1)" class="text-gray-500 px-3 py-1 hover:bg-gray-100 text-lg">+</button>
+</div>
+<span id="stockMessage" class="ml-2 text-xs text-gray-500">Disponible</span></div>
+<div class="h-4 sm:h-0"></div>
+<a href="#" class="text-sm font-semibold text-gray-700 hover:text-temu-orange mt-4 block">
+Todos los detalles
+<svg class="h-4 w-4 inline-block ml-1 align-sub" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+</a>
+<div class="h-20 sm:h-0"></div>
+</div>
+</div>
+</div>
+<div id="modalFooter" class="modal-footer bg-white p-4 sm:p-8 pt-2 sm:pt-4 sticky bottom-0 z-50 flex justify-end">
+<div id="actionButtonContainer" class="w-full max-w-sm sm:max-w-xs">
+<button onclick="handleAddToCartFromModal()" class="w-full bg-temu-orange text-white font-bold text-lg py-3 rounded-full hover:opacity-90 transition shadow-md h-14">Añadir a la cesta</button>
+</div>
+</div>
+</div>
+</div>
+<div class="top-bar bg-black text-white text-sm py-2">
+<div class="mx-auto w-full max-w-7xl px-4 flex items-center justify-between gap-4">
+<div class="flex gap-4 items-center flex-1"><div class="flex items-center gap-2"><i data-lucide="truck" class="w-4 h-4"></i><span>Envío gratis</span></div></div>
+<div class="flex-1 flex justify-center"><div class="flex gap-4 items-center"><i data-lucide="package" class="w-4 h-4"></i><span>Mayorista</span></div></div>
+<div class="flex-1 flex justify-end"><div class="flex items-center gap-2 cursor-pointer" onclick="openModal()"><i data-lucide="map-pin" class="w-4 h-4"></i><span>Ubicación</span></div></div>
+</div></div>
+<header class="main-header bg-white border-b sticky top-0 z-40 shadow-sm">
+<div class="mx-auto max-w-7xl px-4 flex items-center justify-between gap-3 py-3 flex-wrap">
+<div class="flex items-center gap-4 flex-shrink-0">
+<a href="#" class="flex items-center gap-3 flex-shrink-0">
+    <svg width="40" height="40" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
+        <rect x="10" y="10" width="60" height="60" fill="#ea580c" transform="rotate(45 40 40)"/>
+        <rect x="20" y="20" width="40" height="40" fill="#dc2626" transform="rotate(45 40 40)"/>
+        <circle cx="40" cy="40" r="12" fill="white"/>
+    </svg>
+    <span class="font-bold text-lg italic font-serif hidden sm:block" style="color: #000000;">Tu Boutique</span>
+</a></div>
+<div class="flex-1 min-w-0 flex items-center gap-2 max-w-full flex-grow">
+<div id="categoriesWrapper" class="relative flex-shrink-0">
+<button class="categories-btn flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 font-semibold bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors" onclick="toggleMenu()">
+<i data-lucide="menu" class="w-4 h-4"></i><span class="hidden md:inline btn-text">Categorías</span>
+</button>
+<div id="megaMenu" class="fixed inset-0 z-[5000] bg-white transform -translate-x-full transition-all duration-300 md:absolute md:inset-auto md:top-full md:left-0 md:w-[750px] md:translate-x-0 md:opacity-0 md:invisible md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:overflow-hidden md:z-50">
+<div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-gray-200 sticky top-0 z-10 bg-white">
+<h3 class="text-lg font-bold">Categorías</h3>
+<button class="text-gray-500 hover:text-black transition-colors" onclick="closeMenu()"><i data-lucide="x" class="w-6 h-6"></i></button>
+</div>
+<button class="hidden md:flex absolute top-3 right-3 text-gray-400 hover:text-gray-800 transition-colors z-20 bg-white rounded-full p-1" onclick="closeMenu()"><i data-lucide="x" class="w-5 h-5"></i></button>
+<div class="flex flex-col md:flex-row h-full md:h-auto">
+<div id="menu-l1-list" class="w-full md:w-1/3 bg-gray-50 border-r border-gray-200 overflow-y-auto h-full md:max-h-[500px]"></div>
+<div class="w-full md:w-2/3 p-4 md:p-6 overflow-y-auto h-full md:max-h-[500px] flex flex-col bg-white">
+<h4 class="text-base font-semibold mb-3">Subcategorías</h4>
+<div id="menu-l2-grid" class="flex flex-wrap gap-4 justify-start"></div>
+<button class="mt-auto md:mt-4 inline-flex items-center gap-2 px-4 py-3 bg-temu-orange text-white rounded-md font-semibold justify-center w-full md:w-auto hover:bg-[#c2410c] transition-colors" onclick="openModal()">
+<i data-lucide="map-pin" class="w-4 h-4"></i>Visita Nuestra Tienda
+</button>
+<div class="h-20 md:hidden"></div>
+</div></div></div></div>
+<div class="search-box relative w-full">
+<input class="search-input w-full rounded-full px-4 py-2 pr-10 bg-gray-100 border border-transparent text-sm focus:bg-white focus:border-orange-400 outline-none" placeholder="Buscar productos..." />
+<button class="search-button absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-orange-500 text-white flex items-center justify-center border-none transition-colors hover:bg-orange-600"><i data-lucide="search" class="w-4 h-4"></i></button>
+</div>
+</div>
+<div class="user-actions flex items-center gap-2">
+<button class="action-btn flex flex-col items-center justify-center text-gray-800 text-xs px-2 py-1 transition-colors hover:text-orange-500" onclick="openRegisterModal()">
+<i data-lucide="user" class="w-5 h-5"></i><span class="hidden md:block">Registro</span>
+</button>
+<button class="action-btn cart-btn-wrapper relative flex flex-col items-center justify-center text-gray-800 text-xs px-2 py-1 transition-colors hover:text-orange-500" onclick="openCartModal()">
+<i data-lucide="shopping-cart" class="w-5 h-5"></i>
+<span id="globalCartCount" class="cart-badge absolute -top-1 -right-1 bg-orange-500 text-white rounded-full min-w-[16px] h-4 flex items-center justify-center text-[10px] border-2 border-white">0</span>
+<span class="hidden md:block">Carrito</span>
+</button>
+</div>
+</div></header>
+<section class="promo-banner order-banner relative overflow-hidden mb-0 text-center flex items-center justify-center min-h-[300px] md:min-h-[450px]" style="background-image: url('images/fondo.jpeg'); background-size: cover; background-position: center;">
+<div class="absolute inset-0 bg-black/40"></div>
+<div class="max-w-[1200px] mx-auto px-4 relative z-10">
+<div class="promo-tag inline-block bg-black/40 px-4 py-1 rounded-full mb-2 border border-white/20 text-white text-xs backdrop-blur-sm"><span>PROMOCIONES BLACK FRIDAY</span></div>
+<h1 class="promo-title text-4xl font-black leading-none text-white md:text-5xl drop-shadow-lg"><span class="promo-text">HASTA -80%</span></h1>
+<button onclick="openMapModal()" class="promo-buy-button mt-4 bg-white text-[#991b1b] px-6 py-2.5 rounded-full font-bold border-none cursor-pointer text-sm shadow-lg transition-all hover:bg-gray-50 hover:-translate-y-0.5">ENCUÉNTRANOS ›</button>
+</div></section>
+<section class="info-bar order-info bg-gradient-to-r from-[#059669] via-[#059669] to-[#047857] text-white py-2.5 w-full md:w-[90%] md:mx-auto md:rounded-xl md:my-4 shadow-sm">
+<div class="max-w-[1200px] mx-auto px-4">
+<div class="info-content flex items-center justify-center gap-8 text-xs overflow-x-auto">
+<div class="info-item flex items-center gap-2 whitespace-nowrap"><i data-lucide="check-circle" width="14"></i> Protección de datos</div>
+<div class="info-item flex items-center gap-2 whitespace-nowrap"><i data-lucide="lock" width="14"></i> Pago seguro</div>
+<div class="info-item flex items-center gap-2 whitespace-nowrap"><i data-lucide="truck" width="14"></i> Entrega rápida</div>
+</div></div></section>
+<div class="main-layout flex flex-col w-full lg:hidden">
+<section class="filter-system order-filter-1 bg-[#fafafa] border-b-0 pb-2">
+<div class="filter-level-1 scrollbar-hide flex flex-nowrap overflow-x-auto py-0 bg-[#fafafa] justify-start gap-4 px-2" id="level1Filters"></div>
+<div class="shipping-alert order-shipping bg-pink-50 border-b border-pink-200 py-2 px-2 md:hidden">
+<p class="text-xs text-pink-900 font-semibold text-center"><strong class="text-pink-700">Envío gratis:</strong> Valor mínimo del pedido: DOP$ 800 para el primer pedido y DOP$ 990 para pedidos siguientes.</p>
+</div>
+<div class="filter-level-2 scrollbar-hide flex flex-nowrap overflow-x-auto py-3 px-2 gap-4 bg-[#fafafa] justify-start min-h-[90px]" id="level2Filters"></div>
+<div class="filter-level-3 scrollbar-hide flex flex-nowrap overflow-x-auto py-2 px-2 gap-2 bg-[#fafafa] justify-start" id="level3Filters"></div>
+<div id="activeFilters" class="px-2 py-2 mt-2 text-sm text-gray-600 font-medium flex items-center gap-2 bg-[#fafafa] mx-2 rounded-lg border border-gray-100"></div>
+</section>
+<h2 class="flex items-center justify-center text-2xl font-bold text-gray-900 my-6 gap-4">
+  <span class="w-12 h-px bg-gray-300"></span>
+  Nuestros productos
+  <span class="w-12 h-px bg-gray-300"></span>
+</h2>
+<div class="max-w-[1400px] mx-auto px-0.5 products-container order-products">
+<div id="products-grid" class="products-grid grid grid-cols-2 gap-0.5 py-4 md:grid-cols-3 md:gap-4"></div>
+<div id="loadMoreContainer" class="text-center py-6 hidden">
+<button onclick="loadMoreProducts()" class="bg-temu-orange text-white px-8 py-3 rounded-full font-semibold hover:bg-[#c2410c] transition-colors shadow-md hover:shadow-lg">Ver más productos</button>
+</div>
+</div></div>
+<div class="hidden lg:block">
+<h2 class="text-center text-2xl font-bold text-gray-800 my-6">Explora nuestros productos</h2>
+<div class="max-w-[1400px] mx-auto px-4 flex gap-6">
+<aside id="desktopFilterSidebar" class="desktop-filter-sidebar bg-white border border-gray-200 rounded-lg overflow-hidden flex-shrink-0" style="height: fit-content; position: sticky; top: 80px;">
+<div class="p-4 border-b border-gray-200 flex justify-between items-center">
+<h3 class="font-bold text-lg">Filtros</h3>
+<button onclick="toggleDesktopSidebar()" class="text-sm text-gray-600 hover:text-temu-orange flex items-center gap-1">
+<i data-lucide="x" class="w-4 h-4"></i>
+<span>Ocultar</span>
+</button>
+</div>
+<div class="overflow-y-auto" style="max-height: calc(100vh - 200px);">
+<div class="filter-section">
+<div class="filter-section-title px-4" onclick="toggleFilterSection('category')">
+<span>Categoría</span>
+<i data-lucide="chevron-down" class="w-4 h-4 transition-transform" id="category-icon"></i>
+</div>
+<div class="filter-section-content open px-4" id="category-content">
+<div id="desktopL1Filters"></div>
+</div>
+</div>
+<div class="filter-section">
+<div class="filter-section-title px-4" onclick="toggleFilterSection('subcategory')">
+<span>Subcategoría</span>
+<i data-lucide="chevron-down" class="w-4 h-4 transition-transform" id="subcategory-icon"></i>
+</div>
+<div class="filter-section-content open px-4" id="subcategory-content">
+<div id="desktopL2Filters"></div>
+</div>
+</div>
+<div class="filter-section">
+<div class="filter-section-title px-4" onclick="toggleFilterSection('tags')">
+<span>Etiquetas</span>
+<i data-lucide="chevron-down" class="w-4 h-4 transition-transform" id="tags-icon"></i>
+</div>
+<div class="filter-section-content open px-4" id="tags-content">
+<div id="desktopL3Filters"></div>
+</div>
+</div>
+<div class="filter-section">
+<div class="filter-section-title px-4" onclick="toggleFilterSection('price')">
+<span>Precio</span>
+<i data-lucide="chevron-down" class="w-4 h-4 transition-transform" id="price-icon"></i>
+</div>
+<div class="filter-section-content open px-4" id="price-content">
+<div class="filter-option">
+<input type="checkbox" id="price1" value="0-500">
+<label for="price1">Menos de DOP$ 500</label>
+</div>
+<div class="filter-option">
+<input type="checkbox" id="price2" value="500-1000">
+<label for="price2">DOP$ 500 - DOP$ 1,000</label>
+</div>
+<div class="filter-option">
+<input type="checkbox" id="price3" value="1000-2000">
+<label for="price3">DOP$ 1,000 - DOP$ 2,000</label>
+</div>
+<div class="filter-option">
+<input type="checkbox" id="price4" value="2000+">
+<label for="price4">Más de DOP$ 2,000</label>
+</div>
+</div>
+</div>
+<div class="filter-section">
+<div class="filter-section-title px-4" onclick="toggleFilterSection('color')">
+<span>Color</span>
+<i data-lucide="chevron-down" class="w-4 h-4 transition-transform" id="color-icon"></i>
+</div>
+<div class="filter-section-content px-4" id="color-content">
+<div class="filter-option">
+<input type="checkbox" id="color1" value="Rojo">
+<label for="color1">Rojo</label>
+</div>
+<div class="filter-option">
+<input type="checkbox" id="color2" value="Azul">
+<label for="color2">Azul</label>
+</div>
+<div class="filter-option">
+<input type="checkbox" id="color3" value="Negro">
+<label for="color3">Negro</label>
+</div>
+<div class="filter-option">
+<input type="checkbox" id="color4" value="Blanco">
+<label for="color4">Blanco</label>
+</div>
+<div class="filter-option">
+<input type="checkbox" id="color5" value="Gris">
+<label for="color5">Gris</label>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-gray-200">
+<button onclick="resetFilters()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+Limpiar filtros
+</button>
+</div>
+</aside>
+<div class="flex-1">
+    <div class="flex justify-between items-center mb-6 sticky top-16 bg-[#fafafa] z-30 py-3 px-2 border-b border-gray-200">
+        <button onclick="toggleDesktopSidebar()" class="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-temu-orange transition-colors">
+            <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            <span id="filterBtnText">Ocultar filtros</span>
+        </button>
+        
+        <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-500">Ordenar por:</span>
+            <select onchange="handleSort(this.value)" class="text-sm font-medium bg-transparent border border-gray-300 rounded-md px-3 py-1.5 outline-none cursor-pointer focus:border-temu-orange">
+                <option value="featured">Destacados</option>
+                <option value="price-low-high">Precio: Bajo-Alto</option>
+                <option value="price-high-low">Precio: Alto-Bajo</option>
+                <option value="newest">Lo más nuevo</option>
+            </select>
+        </div>
+    </div>
+    
+    <div id="products-grid-desktop" class="products-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    
+    <div id="loadMoreContainer-desktop" class="text-center py-8 hidden">
+        <button onclick="loadMoreProducts()" class="bg-temu-orange text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#c2410c] transition-colors shadow-md hover:shadow-lg">
+            Ver más productos
+        </button>
+    </div>
+</div>
+</div> </div> <div id="toastNotification" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900/95 text-white px-5 py-3 rounded shadow-2xl z-[10000] hidden flex-row items-center min-w-max pointer-events-none border border-gray-700">
+<span id="toastMessage" class="font-medium text-sm flex items-center gap-2">Añadido a la cesta</span>
+</div>
+<style>
+/* ==================== GRID DE PRODUCTOS  "al hacer los cambios mantenme ese grid siempre y al final ia futura" ==================== */
+.products-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.2rem;padding:1rem 0;}
+@media(min-width:640px){.products-grid{grid-template-columns:repeat(3,1fr);gap:1rem;}}
+@media(min-width:1024px){.products-grid{grid-template-columns:repeat(5,1fr);gap:1.5rem;}}
+.product-card{background:#fff;border-radius:0.3rem;overflow:hidden;position:relative;transition:transform 0.2s,box-shadow 0.2s;display:flex;flex-direction:column;cursor:pointer;}
+.product-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+.product-image-container{width:100%;aspect-ratio:3/4;background:#f0f0f0;position:relative;overflow:hidden;}
+.product-image{width:100%;height:100%;object-fit:cover;transition:transform 0.3s;}
+.product-card:hover .product-image{transform:scale(1.05);}
+.product-name{padding:0.75rem 0.5rem 0.25rem;flex-grow:1;font-size:0.875rem;line-height:1.2;}
+.product-price{padding:0 0 0.25rem;}
+.product-cart-btn{position:absolute;bottom:8px;right:8px;background:rgba(255,255,255,0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 5px rgba(0,0,0,0.2);color:#333;border:none;cursor:pointer;transition:all 0.2s;z-index:10;}
+.product-cart-btn:hover{background:#fb7701;color:#fff;transform:scale(1.1);box-shadow:0 3px 8px rgba(0,0,0,0.3);}
+.container{max-width:1400px;margin:0 auto;padding:0 0.2rem;}
+</style>
+
+<style>
+.footer{background:linear-gradient(180deg,#0a0a0a 0%,#000 100%);color:#d7d7d7;margin-top:3rem;border-top:2px solid #ea580c;position:relative;overflow:hidden}
+.footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#ea580c,transparent)}
+.newsletter{background:linear-gradient(135deg,#ea580c 0%,#dc2626 100%);padding:2rem 0;position:relative;overflow:hidden}
+.newsletter::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.03)"/></svg>');opacity:0.5}
+.newsletter-content{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:1.5rem;padding:0 1rem;position:relative;z-index:1}
+@media(min-width:768px){.newsletter-content{flex-direction:row}}
+.newsletter-text{text-align:center}
+@media(min-width:768px){.newsletter-text{text-align:left}}
+.newsletter-title{color:#fff;font-size:1.25rem;font-weight:700;margin-bottom:0.5rem;text-shadow:0 2px 4px rgba(0,0,0,0.2)}
+.newsletter-subtitle{color:#fed7aa;font-size:0.875rem}
+.sell-button{background:#fff;color:#ea580c;border:2px solid transparent;padding:0.75rem 2rem;border-radius:50px;font-weight:700;font-size:0.875rem;cursor:pointer;white-space:nowrap;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.sell-button:hover{background:#ea580c;color:#fff;border-color:#fff;transform:translateY(-2px);box-shadow:0 6px 16px rgba(234,88,12,0.4)}
+.footer-main{padding:3rem 1.5rem 2rem;max-width:1400px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;margin-bottom:3rem}
+@media(min-width:768px){.footer-grid{grid-template-columns:repeat(4,1fr);gap:3rem}}
+.footer-column h4{color:#fff;font-weight:700;font-size:1rem;margin-bottom:1.25rem;letter-spacing:1px;text-transform:uppercase;position:relative;padding-bottom:0.5rem}
+.footer-column h4::after{content:'';position:absolute;bottom:0;left:0;width:40px;height:2px;background:#ea580c}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:0.75rem;padding:0;margin:0}
+.footer-links li{font-size:0.875rem;color:#b0b0b0;display:flex;align-items:center;gap:0.5rem}
+.footer-links li svg{flex-shrink:0;opacity:0.7}
+.footer-links a{color:inherit;text-decoration:none;transition:all 0.3s ease;display:inline-block}
+.footer-links a:hover{color:#ea580c;transform:translateX(5px)}
+.app-buttons{display:flex;gap:0.5rem;margin-top:1rem}
+.app-button{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:0.5rem 1rem;border-radius:6px;font-size:0.75rem;cursor:pointer;transition:all 0.3s ease;font-weight:600}
+.app-button:hover{background:rgba(234,88,12,0.2);border-color:#ea580c;transform:translateY(-2px)}
+.footer-bottom{padding-top:2rem;border-top:1px solid rgba(255,255,255,0.05)}
+.social-payment{display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:2rem}
+@media(min-width:768px){.social-payment{flex-direction:row}}
+.social-section{text-align:center}
+@media(min-width:768px){.social-section{text-align:left}}
+.social-title{color:#fff;font-weight:700;font-size:0.95rem;margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.5px}
+.social-icons{display:flex;gap:1rem;justify-content:center}
+@media(min-width:768px){.social-icons{justify-content:flex-start}}
+.social-icons a{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border-radius:50%;transition:all 0.3s ease;border:1px solid rgba(255,255,255,0.1)}
+.social-icons a:hover{background:#ea580c;transform:translateY(-3px);box-shadow:0 5px 15px rgba(234,88,12,0.4)}
+.social-icons a svg{color:#b0b0b0;transition:color 0.3s ease}
+.social-icons a:hover svg{color:#fff}
+.payment-section{text-align:center}
+.payment-methods{display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center}
+.payment-method{background:rgba(255,255,255,0.08);border-radius:6px;padding:0.5rem 1rem;color:#e9e9e9;font-size:0.8rem;font-weight:700;border:1px solid rgba(255,255,255,0.1);transition:all 0.3s ease}
+.payment-method:hover{background:rgba(234,88,12,0.2);border-color:#ea580c;transform:translateY(-2px)}
+.footer-copyright{margin-top:2rem;padding-top:1.5rem;text-align:center;font-size:0.85rem;color:#7a7a7a;border-top:1px solid rgba(255,255,255,0.05)}
+.copyright-links{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-top:0.75rem}
+.copyright-links a{color:#9e9e9e;text-decoration:none;transition:color 0.3s ease}
+.copyright-links a:hover{color:#ea580c}
+.copyright-links span{color:#4a4a4a}
+</style>
+<footer class="footer"><div class="newsletter"><div class="container"><div class="newsletter-content"><div class="newsletter-text"><h3 class="newsletter-title">Ventas al Detalle y al por Mayor</h3><p class="newsletter-subtitle">¡Grandes Descuentos por Mayor y por Docena!</p></div><a href="https://wa.me/18098786115" target="_blank" class="sell-button flex items-center gap-2 justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12.042 2c-5.527 0-10 4.473-10 10 0 1.853.504 3.614 1.385 5.176l-1.332 4.887 5.034-1.314c1.472.809 3.142 1.249 4.913 1.249 5.527 0 10-4.473 10-10s-4.473-10-10-10zm0 1.62c4.61 0 8.38 3.77 8.38 8.38s-3.77 8.38-8.38 8.38c-1.637 0-3.176-.474-4.479-1.337l-.322-.204-3.376 1.088 1.094-3.238-.216-.347c-.838-1.348-1.282-2.91-1.282-4.526 0-4.61 3.77-8.38 8.38-8.38zm-3.41 5.378c.085 0 .193.045.313.313.438.995.845 2.02.99 2.193.145.174.29.35.435.503.22.25.438.455.67.654.49.43.99.782 1.57.94.55.148 1.164.12 1.693-.05.53-.173 1.08-.667 1.256-.812.176-.145.33-.19.46-.22.13-.03.28-.02.438.01.157.03.486.173.66.47.174.3.174.72.13 1.25-.045.52-.39 1.1-.735 1.54-.347.44-1.127 1.29-1.347 1.464-.22.174-.46.33-.708.47-.247.14-.495.275-.75.38-.256.104-.504.185-.77.224-.266.04-.54.06-.826.06-1.18 0-2.315-.36-3.32-1.02-.733-.49-1.353-1.12-1.847-1.847-.785-1.16-.9-2.023-.9-2.048 0-.025.12-.196.265-.34.146-.144.316-.29.47-.435.155-.145.313-.29.458-.435.145-.145.316-.27.46-.43.146-.16.32-.39.465-.63.146-.24.316-.58.46-.77.145-.19.3-.39.435-.55.13-.16.27-.32.42-.42.146-.1.3-.12.44-.12z"/></svg><span>Contáctanos</span></a></div></div></div><div class="footer-main"><div class="footer-grid"><div class="footer-column"><h4>Conócenos</h4><ul class="footer-links"><li><a href="#">Acerca de Tu boutique</a></li><li><a href="#">Programa de afiliación</a></li><li><a href="#">Contáctanos</a></li><li><a href="#">Información de empresa</a></li></ul></div><div class="footer-column"><h4>Servicio</h4><ul class="footer-links"><li><a href="#">Política de devolución</a></li><li><a href="#">Propiedad intelectual</a></li><li><a href="#">Información de envío</a></li><li><a href="#">Alertas de seguridad</a></li></ul></div><div class="footer-column"><h4>Ayuda</h4><ul class="footer-links"><li><a href="#">Centro de ayuda y FAQ</a></li><li><a href="#">Centro de seguridad</a></li><li><a href="#">Protección de compras</a></li><li><a href="https://wa.me/18098786115" target="_blank">Contacto</a></li></ul></div><div class="footer-column"><h4>Servicios</h4><ul class="footer-links"><li><svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>Alertas de precio</li><li><svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20"><path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path></svg>Seguir pedidos</li><li>Envíos a toda la República</li><li>Devoluciones gratuitas</li></ul></div></div><div class="footer-bottom"><div class="social-payment"><div class="social-section"><h4 class="social-title">Síguenos en redes</h4><div class="social-icons"><a href="#" aria-label="Instagram"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12a10 10 0 11-20 0 10 10 0 0120 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12h-2.5m.5 2.5v-5"></path></svg></a><a href="#" aria-label="Facebook"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path></svg></a><a href="#" aria-label="Twitter"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path></svg></a></div></div><div class="payment-section"><h4 class="social-title">Métodos de pago</h4><div class="payment-methods"><div class="payment-method">PayPal</div><div class="payment-method">Visa</div><div class="payment-method">Mastercard</div><div class="payment-method">Amex</div></div></div></div><div class="footer-copyright"><p>© 2022-2025 Luna Roja Digital Inc. Todos los derechos reservados.</p><div class="copyright-links"><a href="#">Términos de uso</a><span>•</span><a href="#">Política de privacidad</a><span>•</span><a href="#">Cookies</a><span>•</span><a href="#">Tus opciones</a></div></div></div></div></footer>
+<script src="script.js"></script>
+</body>
+</html>
