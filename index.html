@@ -761,9 +761,9 @@
     function initializeAudioSystem(autoplay = false) {
         
         const audioSections = {
-            'hero': { src: 'audio/intro.mp3', skip: 5, section: 'Hero', hasAudio: true },
+            'hero': { src: 'audio/intro.MP3', skip: 5, section: 'Hero', hasAudio: true },
             'demo': { src: '', skip: 5, section: 'Demo', hasAudio: false, type: 'modal' },
-            'section-1': { src: 'audio/section-1.mp3', skip: 3, section: 'Sección 1', hasAudio: true },
+            'section-1': { src: 'audio/section-1.MP3', skip: 3, section: 'Sección 1', hasAudio: true },
             'section-2': { src: '', skip: 4, section: 'Sección 2', hasAudio: false, type: 'toast' },
             'section-3': { src: '', skip: 3, section: 'Sección 3', hasAudio: false, type: 'toast' }
         };
@@ -1025,11 +1025,6 @@
             setTimeout(() => { togglePlayPause(); }, 500);
         }
     }
-});
-
-            audio.addEventListener('error', function(e) {
-    console.log('Audio error:', audio.error.code, audio.error.message);
-    console.log('Src attempted:', audio.src);
 });
 
 // ========== HELPERS GLOBALES ==========
@@ -4687,12 +4682,13 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<script src="script.js?v=2.2.3.3.4.3.2"></script>
+<script src="script.js?v=4.3.2"></script>
 <!-- el hover del boton se rompio por el hover del container a arreglar manana-->
 
 </body>
 
 </html>
+
 
 
 
