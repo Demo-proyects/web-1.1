@@ -287,60 +287,50 @@
 </header>
 
 
-<!-- ========== MODAL DE VERIFICACIÓN ========== -->
-<!-- ========== MODAL DE VERIFICACIÓN ========== -->
-<div id="age-verification-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100] px-4">
-  <div class="bg-gradient-to-br from-gray-900 to-black border border-white/20 rounded-xl max-w-md w-full p-8 text-center relative overflow-hidden">
-    <!-- Fondo decorativo -->
-    <div class="absolute inset-0 opacity-10">
+<div id="age-verification-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100] px-4 py-4">
+  <div class="bg-gradient-to-br from-gray-900 to-black border border-white/20 rounded-xl max-w-md w-full p-6 md:p-8 text-center relative overflow-hidden flex flex-col max-h-[95vh]">
+    
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
       <div class="absolute -top-24 inset-x-0 bottom-0">
         <img alt="fondo background" decoding="async" src="img/fondo.webp" class="w-full h-full object-cover">
         <div class="absolute inset-0 grain-overlay"></div>
       </div>
     </div>
     
-    <div class="relative z-10">
-      <!-- Icono de audio con indicador pulsante -->
-      <div class="w-16 h-16 mx-auto mb-6 bg-red-500/20 rounded-full flex items-center justify-center border border-red-500/30 relative">
-        <i class="fas fa-headphones text-2xl text-red-400"></i>
-        <!-- Punto rojo pulsante igual al indicador de audio -->
+    <div class="relative z-10 overflow-y-auto pr-1">
+      <div class="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 bg-red-500/20 rounded-full flex items-center justify-center border border-red-500/30 relative">
+        <i class="fas fa-headphones text-xl md:text-2xl text-red-400"></i>
         <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
       </div>
       
-      <!-- Título principal -->
-      <h2 class="text-2xl font-bold text-white mb-4 tracking-tight">
+      <h2 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4 tracking-tight">
         <span>EXPERIENCIA CON AUDIO</span>
       </h2>
       
-      <!-- Descripción -->
-      <div class="text-gray-300 mb-6 space-y-3">
-        <p class="font-semibold">Este sitio incluye narración de audio para facilitar la lectura. Cada sección tiene un botón rojo; haz clic en él para escuchar el contenido en audio.</p>
+      <div class="text-gray-300 mb-5 md:mb-6 space-y-3 text-sm md:text-base">
+        <p class="font-semibold leading-snug">Este sitio incluye narración de audio para facilitar la lectura. Cada sección tiene un botón rojo; haz clic en él para escuchar el contenido en audio.</p>
         
-        <!-- Ejemplo visual del botón pulsante -->
-        <div class="bg-black/40 p-4 rounded border border-white/10 mt-4">
-          <!-- Ejemplo del botón pulsante -->
-          <div class="flex items-center justify-center gap-3 mb-2">
-            <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-            <span class="text-sm text-white font-semibold">Navega con un click</span>
+        <div class="bg-black/40 p-3 md:p-4 rounded border border-white/10 mt-2">
+          <div class="flex items-center justify-center gap-3 mb-1">
+            <div class="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></div>
+            <span class="text-xs md:text-sm text-white font-semibold uppercase">Navega con un click</span>
           </div>
-          <p class="text-xs text-gray-400">
+          <p class="text-[10px] md:text-xs text-gray-400">
             Navega con los botones Siguiente/Anterior del reproductor
           </p>
         </div>
       </div>
       
-      <!-- Botones -->
       <div class="flex flex-col gap-3">
-        <button id="confirm-age-btn" class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white font-bold py-4 rounded-sm hover:from-purple-500 hover:via-pink-500 hover:to-red-500 transition-all duration-300 transform hover:scale-105 text-lg">
-          ENTRAR Y ACTIVAR AUDIO
+        <button id="confirm-age-btn" class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white font-bold py-3.5 md:py-4 rounded-sm hover:from-purple-500 hover:via-pink-500 hover:to-red-500 transition-all duration-300 transform active:scale-95 text-base md:text-lg">
+          ACTIVAR AUDIO
         </button>
-        <button onclick="window.history.back()" class="bg-transparent border-2 border-white/20 text-white font-bold py-3 rounded-sm hover:border-white/40 transition-all duration-300 text-sm">
+        <button onclick="window.history.back()" class="bg-transparent border-2 border-white/20 text-white font-bold py-2.5 md:py-3 rounded-sm hover:border-white/40 transition-all duration-300 text-xs md:text-sm">
           CONTINUAR SIN AUDIO
         </button>
       </div>
       
-      <!-- Texto informativo -->
-      <p class="text-xs text-gray-500 mt-6">
+      <p class="text-[10px] md:text-xs text-gray-500 mt-5 md:mt-6 uppercase tracking-wider">
         Controla el audio desde el reproductor en pantalla
       </p>
     </div>
@@ -4682,14 +4672,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<script src="script.js?v=4.3.2"></script>
+<script src="script.js?v=2.2.2"></script>
 <!-- el hover del boton se rompio por el hover del container a arreglar manana-->
 
 </body>
-
 </html>
-
-
-
-
-
