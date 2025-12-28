@@ -286,7 +286,7 @@
     </nav>
 </header>
 
-
+<!--
 <div id="age-verification-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100] px-4 py-4">
   <div class="bg-gradient-to-br from-gray-900 to-black border border-white/20 rounded-xl max-w-md w-full p-6 md:p-8 text-center relative overflow-hidden flex flex-col max-h-[95vh]">
     
@@ -335,7 +335,7 @@
       </p>
     </div>
   </div>
-</div>
+</div>-->
 
   <!-- ========== HERO SECTION CON AUDIO COMPLETO ========== -->
 <section id="hero" class="relative min-h-[90vh] w-full flex flex-col justify-center px-4 md:px-8 lg:px-16 overflow-hidden clickable-section" role="banner" aria-label="Hero Section">
@@ -401,15 +401,18 @@
       </div>
       
       <div class="flex flex-col sm:flex-row gap-4 lg:gap-6 mb-12">
-        <a class="group px-8 lg:px-10 py-4 lg:py-5 bg-gradient-to-r from-purple-600 via-pink-600 to-brandRed text-white font-lovelo rounded-sm hover:from-purple-500 hover:via-pink-500 hover:to-brandRed/90 transition-all duration-300 relative overflow-hidden text-center flex-1 sm:flex-none transform hover:scale-105" 
-   onclick="goToSection1()" 
-   style="cursor: pointer;" href="#section-1">
-  <span class="relative z-10 flex items-center justify-center gap-2 text-sm lg:text-base">Saber más</span>
-  <div class="absolute inset-0 bg-white/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-</a>
-        <a class="group px-8 lg:px-10 py-4 lg:py-5 border-2 border-brandLight/20 text-brandLight font-lovelo rounded-sm hover:border-brandLight/40 transition-all duration-300 relative text-center flex-1 sm:flex-none" aria-label="Book Free Consultation" href="#demos">
-          <span class="relative z-10 text-center block text-sm lg:text-base">Ver Oferta</span>
-          <div class="absolute inset-0 bg-brandLight/5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+        <button onclick="openHeroVideo()" class="group px-8 lg:px-10 py-4 lg:py-5 bg-gradient-to-r from-purple-600 via-pink-600 to-brandRed text-white font-lovelo rounded-sm hover:from-purple-500 hover:via-pink-500 hover:to-brandRed/90 transition-all duration-300 relative overflow-hidden text-center flex-1 sm:flex-none transform hover:scale-105 cursor-pointer">
+           <span class="relative z-10 flex items-center justify-center gap-2 text-sm lg:text-base">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            Ver Video</span>
+           <div class="absolute inset-0 bg-white/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+        </button>
+
+        <a href="#section-1" class="group px-8 lg:px-10 py-4 lg:py-5 border-2 border-brandLight/20 text-brandLight font-lovelo rounded-sm hover:border-brandLight/40 transition-all duration-300 relative text-center flex-1 sm:flex-none" aria-label="Saber Más">
+           <span class="relative z-10 text-center block text-sm lg:text-base">Saber más</span>
+           <div class="absolute inset-0 bg-brandLight/5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
         </a>
       </div>
       
@@ -417,13 +420,13 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div class="group text-center relative">
             <svg class="w-6 h-6 text-brandRed group-hover:text-white transition-colors duration-300 mx-auto mb-2 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 20V4M13 4L6 11M13 4L20 11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            <div class="text-2xl font-lovelo text-brandRed group-hover:text-white mb-1 transform group-hover:scale-110 transition-all duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">Up to 5X</div>
+            <div class="text-2xl font-lovelo text-brandRed group-hover:text-white mb-1 transform group-hover:scale-110 transition-all duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">Up to 2X</div>
             <div class="text-brandGray text-xs font-lovelo tracking-wider group-hover:text-white transition-colors duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">MAS CLIENTES</div>
           </div>
           <div class="group text-center relative">
             <svg class="w-6 h-6 text-brandRed group-hover:text-white transition-colors duration-300 mx-auto mb-2 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            <div class="text-2xl font-lovelo text-brandRed group-hover:text-white mb-1 transform group-hover:scale-110 transition-all duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">+150</div>
-            <div class="text-brandGray text-xs font-lovelo tracking-wider group-hover:text-white transition-colors duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">CLIENTES SATISFECHOS</div>
+            <div class="text-2xl font-lovelo text-brandRed group-hover:text-white mb-1 transform group-hover:scale-110 transition-all duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">24/7</div>
+            <div class="text-brandGray text-xs font-lovelo tracking-wider group-hover:text-white transition-colors duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">CLIENTES ATENDIDOS</div>
           </div>
           <div class="group text-center relative">
             <svg class="w-6 h-6 text-brandRed group-hover:text-white transition-colors duration-300 mx-auto mb-2 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -432,8 +435,8 @@
           </div>
           <div class="group text-center relative">
             <svg class="w-6 h-6 text-brandRed group-hover:text-white transition-colors duration-300 mx-auto mb-2 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 21h18M5 21V11m4 10V7m4 14V3m4 18v-8m4 8v-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            <div class="text-2xl font-lovelo text-brandRed group-hover:text-white mb-1 transform group-hover:scale-110 transition-all duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">100%</div>
-            <div class="text-brandGray text-xs font-lovelo tracking-wider group-hover:text-white transition-colors duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">RENTABLE</div>
+            <div class="text-2xl font-lovelo text-brandRed group-hover:text-white mb-1 transform group-hover:scale-110 transition-all duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">+ 60%</div>
+            <div class="text-brandGray text-xs font-lovelo tracking-wider group-hover:text-white transition-colors duration-300 [filter:drop-shadow(1px_1px_0_black)_drop-shadow(-1px_-1px_0_black)_drop-shadow(1px_-1px_0_black)_drop-shadow(-1px_1px_0_black)]">MENOS GESTIÓN</div>
           </div>
         </div>
       </div>
@@ -484,16 +487,126 @@
   </div>
 </section>
 
-<!-- ========== REPRODUCTOR DE AUDIO COMPLETO OPTIMIZADO ========== -->
+<div class="absolute right-[-5%] top-[55%] -translate-y-1/2 flex-col gap-12 w-[500px] hidden lg:flex xl:w-[500px] lg:w-[400px]" style="opacity:0.6">
+        </div>
+  </div>
+
+  <div id="hero-video-modal" onclick="closeHeroVideo(event)">
+    <div class="hero-video-wrapper" id="hero-video-wrapper">
+      <span class="hero-close-btn" onclick="closeHeroVideo(event, true)">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </span>
+      
+      <video id="hero-promo-player" controls playsinline>
+        <source src="https://bouzen.org/wp-content/uploads/2025/12/video-venta-optimizado.mp4" type="video/mp4">
+        Tu navegador no soporta el video.
+      </video>
+    </div>
+  </div>
+
+<style>
+/* --- ANIMACIONES --- */
+.scale-in-center { animation: scale-in-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; }
+.scale-out-center { animation: scale-out-center 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both; }
+@keyframes scale-in-center { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes scale-out-center { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0); opacity: 0; } }
+
+/* --- MODAL --- */
+#hero-video-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    inset: 0;
+    background-color: rgba(10, 10, 10, 0.98); 
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-video-wrapper {
+    position: relative;
+    height: 85vh; /* Móvil */
+    aspect-ratio: 9 / 16; 
+    max-width: 95vw;
+    background: #000;
+    border-radius: 12px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+}
+
+@media (min-width: 768px) {
+    .hero-video-wrapper { height: 90vh; }
+}
+
+#hero-promo-player {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.hero-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100001;
+    transition: 0.3s;
+}
+
+.hero-close-btn:hover {
+    background: #dc2626;
+    transform: rotate(90deg) scale(1.1);
+}
+</style>
+
+<script>
+    const heroModal = document.getElementById('hero-video-modal');
+    const heroWrapper = document.getElementById('hero-video-wrapper');
+    const heroPlayer = document.getElementById('hero-promo-player');
+
+    function openHeroVideo() {
+        if (!heroModal) return;
+        heroModal.style.display = 'flex'; 
+        heroWrapper.classList.remove('scale-out-center');
+        heroWrapper.classList.add('scale-in-center');
+        if (heroPlayer) {
+            heroPlayer.currentTime = 0;
+            heroPlayer.play();
+        }
+    }
+
+    function closeHeroVideo(event, forceClose) {
+        if (forceClose || (event && event.target === heroModal)) {
+            heroWrapper.classList.add('scale-out-center');
+            setTimeout(() => {
+                heroModal.style.display = 'none';
+                if (heroPlayer) {
+                    heroPlayer.pause();
+                }
+            }, 500);
+        }
+    }
+</script>
+
+<!-- ========== REPRODUCTOR DE AUDIO COMPLETO OPTIMIZADO ========== 
 <div class="audio-player-container fixed bottom-4 left-4 w-72 bg-black/80 backdrop-blur-sm border border-red-600/30 rounded-2xl z-50 transition-all duration-700 ease-in-out shadow-[0_0_20px_rgba(220,38,38,0.2)] overflow-hidden" style="height: 110px;">
   <div class="player-content px-2.5 py-2 h-full flex flex-col justify-between">
-    <!-- Información de la pista y barra de progreso en línea -->
+
     <div class="flex items-center justify-between gap-2 mb-1">
       <div class="text-xs text-white font-lovelo truncate flex-1 min-w-0" id="track-title">Intro</div>
       <div class="text-[10px] leading-tight text-red-400 font-lovelo bg-red-950/40 px-1.5 py-0.5 rounded border border-red-600/40 whitespace-nowrap flex-shrink-0" id="section-indicator">Hero</div>
     </div>
     
-    <!-- Barra de progreso compacta -->
+    
     <div class="mb-1.5">
       <input type="range" class="w-full h-1 bg-gray-800 rounded appearance-none cursor-pointer slider" id="audio-progress" value="0" min="0" max="100">
       <div class="flex justify-between text-[10px] text-gray-500 mt-0.5 font-lovelo">
@@ -502,16 +615,16 @@
       </div>
     </div>
     
-    <!-- CONTROLES COMPACTOS CON MEJOR DISTRIBUCIÓN -->
+    
     <div class="flex items-center justify-between gap-1">
-      <!-- Botones de navegación -->
+      
       <div class="flex items-center gap-0.5">
-        <!-- Botón Anterior ◀ -->
+        
         <button class="text-gray-400 hover:text-red-400 transition-colors bg-gray-900/50 hover:bg-red-950/30 rounded-full w-7 h-7 flex items-center justify-center border border-red-900/30 hover:border-red-600/50 flex-shrink-0" id="audio-prev" title="Sección anterior">
           <i class="fas fa-step-backward text-[10px]"></i>
         </button>
         
-        <!-- Botón Play/Pause -->
+        
         <button class="bg-gradient-to-r from-purple-600 to-red-600 hover:from-purple-500 hover:to-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg hover:scale-105 transition-all flex-shrink-0 mx-0.5" id="audio-play" title="Reproducir">
           <i class="fas fa-play text-[10px] ml-0.5"></i>
         </button>
@@ -519,20 +632,20 @@
           <i class="fas fa-pause text-[10px]"></i>
         </button>
         
-        <!-- Botón Siguiente ▶ -->
+        
         <button class="text-gray-400 hover:text-red-400 transition-colors bg-gray-900/50 hover:bg-red-950/30 rounded-full w-7 h-7 flex items-center justify-center border border-red-900/30 hover:border-red-600/50 flex-shrink-0" id="audio-next" title="Siguiente sección">
           <i class="fas fa-step-forward text-[10px]"></i>
         </button>
       </div>
       
-      <!-- Botón Saltar Silencio -->
+      
       <button class="text-[10px] bg-gray-900/50 hover:bg-red-950/30 text-gray-400 hover:text-red-400 px-1.5 py-1 rounded border border-red-900/30 hover:border-red-600/50 transition duration-200 font-lovelo flex items-center flex-shrink-0" id="skip-silence" title="Saltar silencio">
         <i class="fas fa-forward text-[9px] mr-1"></i><span id="skip-time">5s</span>
       </button>
     </div>
   </div>
 
-  <!-- Indicador minimizado (círculo) -->
+  
   <div class="mini-indicator absolute inset-0 hidden items-center justify-center bg-gradient-to-r from-purple-600/80 to-red-600/80 rounded-full">
     <i class="fas fa-music text-white text-lg"></i>
   </div>
@@ -674,7 +787,7 @@
   cursor: pointer;
 }
 </style>
-
+-->
   
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -4672,7 +4785,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<script src="script.js?v=2.2.2"></script>
+<script src="script.js?v=2.2.4.4.4.4.2"></script>
 <!-- el hover del boton se rompio por el hover del container a arreglar manana-->
 
 </body>
